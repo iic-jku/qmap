@@ -15,6 +15,7 @@
 
 #include "utils.hpp"
 #include "nlohmann/json.hpp"
+#include "Encodings.hpp"
 
 constexpr unsigned short GATES_OF_BIDIRECTIONAL_SWAP = 3;
 constexpr unsigned short GATES_OF_UNIDIRECTIONAL_SWAP = 7;
@@ -170,6 +171,9 @@ public:
 			out << std::endl;
 		}
 	};
+
+	[[nodiscard]] long getLongestPath() const;
+	[[nodiscard]] long getLongestPath(const std::set<unsigned short> &qubitChoice) const;
 protected:
 	std::string architectureName;
 	std::string calibrationName;

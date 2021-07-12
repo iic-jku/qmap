@@ -47,6 +47,11 @@ struct MappingResults {
 	Method method = Method::None;
 	InitialLayoutStrategy initialLayoutStrategy = InitialLayoutStrategy::None;
 	LayeringStrategy layeringStrategy = LayeringStrategy::None;
+	Encodings encoding = Encodings::None;
+	Groupings grouping = Groupings::Halves;
+	Strategy strategy = Strategy::None;
+
+	int limit = 0;
 
 	double time = 0.0;
 	bool timeout = true;
@@ -80,6 +85,11 @@ struct MappingResults {
 		method = mappingResults.method;
 		initialLayoutStrategy = mappingResults.initialLayoutStrategy;
 		layeringStrategy = mappingResults.layeringStrategy;
+
+		encoding = mappingResults.encoding;
+		grouping = mappingResults.grouping;
+		strategy = mappingResults.strategy;
+		limit = mappingResults.limit;
 
 		output_name = mappingResults.output_name;
 		output_qubits = mappingResults.output_qubits;
@@ -124,6 +134,16 @@ struct MappingResults {
 			if (initialLayoutStrategy != InitialLayoutStrategy::None) {
 				out << "\t\t\"initialLayoutStrategy\": \"" << toString(initialLayoutStrategy) << "\",\n";
 
+			}
+			if (encoding != Encodings::None){
+                out << "\t\t\"encoding\": \"" << toString(encoding) << "\",\n";
+                out << "\t\t\"grouping\": \"" << toString(grouping) << "\",\n";
+			}
+			if (strategy != Strategy::None) {
+                out << "\t\t\"strategy\": \"" << toString(strategy) << "\",\n";
+                if (strategy == Strategy::Custom) {
+                    out << "\t\t\"limit\": \"" << limit << "\",\n";
+                }
 			}
 			out << "\t\t\"arch\": \"" << architecture << "\"";
 			if (!calibration.empty()) {
@@ -175,6 +195,16 @@ struct MappingResults {
 			if (initialLayoutStrategy != InitialLayoutStrategy::None) {
 				stats["initialLayoutStrategy"] = initialLayoutStrategy;
 			}
+            if (encoding != Encodings::None){
+                stats["encoding"] = encoding;
+                stats["grouping"] = grouping;
+            }
+            if (strategy != Strategy::None) {
+                stats["strategy"] = strategy;
+                if (strategy == Strategy::Custom) {
+                    stats["limit"] = limit;
+                }
+            }
 			stats["arch"] = architecture;
 			if (!calibration.empty())
 				stats["calibration"] = calibration;

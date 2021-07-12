@@ -38,6 +38,16 @@ NLOHMANN_JSON_SERIALIZE_ENUM( InitialLayoutStrategy, {
 enum class LayeringStrategy {
 	IndividualGates, DisjointQubits, OddGates, QubitTriangle, None
 };
+
+enum class Encodings {
+	None, Commander, Bimander
+};
+enum class Groupings {
+	Fixed2, Fixed3, Halves, Logarithm
+};
+enum class Strategy {
+	None, Custom, ArchitectureSwaps, SubsetSwaps, Increasing
+};
 static std::string toString(const LayeringStrategy strategy) {
 	switch (strategy) {
 		case LayeringStrategy::IndividualGates:
@@ -62,6 +72,69 @@ NLOHMANN_JSON_SERIALIZE_ENUM( LayeringStrategy, {
 	{LayeringStrategy::QubitTriangle, "qubit_triangle"},
 })
 
+static std::string toString(const Encodings encoding) {
+    switch (encoding) {
+        case Encodings::None:
+            return "none";
+        case Encodings::Commander:
+            return "commander";
+        case Encodings::Bimander:
+            return "bimander";
+    }
+    return " ";
+}
+
+NLOHMANN_JSON_SERIALIZE_ENUM(Encodings, {
+    {Encodings::None, "none"},
+    {Encodings::Commander, "commander"},
+    {Encodings::Bimander, "bimander"},
+})
+
+static std::string toString(const Groupings grouping) {
+    switch (grouping) {
+        case Groupings::Fixed2:
+            return "fixed2";
+        case Groupings::Fixed3:
+            return "fixed3";
+        case Groupings::Logarithm:
+            return "logarithm";
+        case Groupings::Halves:
+            return "halves";
+    }
+    return " ";
+}
+
+NLOHMANN_JSON_SERIALIZE_ENUM(Groupings, {
+    {Groupings::Fixed2, "fixed2"},
+    {Groupings::Fixed3, "fixed3"},
+    {Groupings::Halves, "halves"},
+    {Groupings::Logarithm, "logarithm"},
+})
+
+static std::string toString(const Strategy strategy) {
+    switch (strategy) {
+        case Strategy::ArchitectureSwaps:
+            return "architectureswaps";
+        case Strategy::SubsetSwaps:
+            return "subsetswaps";
+        case Strategy::Custom:
+            return "custom";
+        case Strategy::None:
+            return "none";
+        case Strategy::Increasing:
+            return "increasing";
+    }
+    return " ";
+}
+
+NLOHMANN_JSON_SERIALIZE_ENUM(Strategy, {
+    {Strategy::None, "none"},
+    {Strategy::ArchitectureSwaps, "architectureswaps"},
+    {Strategy::SubsetSwaps, "subsetswaps"},
+    {Strategy::Custom, "custom"},
+	{Strategy::Increasing, "increasing"}
+})
+
 struct MappingSettings {
 	MappingSettings() = default;
 
@@ -83,7 +156,13 @@ struct MappingSettings {
     bool teleportationFake = false;
 	double firstLookaheadFactor = 0.75;
 	double lookaheadFactor = 0.5;
-
+	Encodings encoding = Encodings::None;
+	Groupings grouping = Groupings::Halves;
+	bool enableLimits = false;
+	bool useBDD = false;
+	Strategy strategy = Strategy::None;
+	int limit = 0;
+	bool useQubitSubsets = true;
 };
 
 #endif //QMAP_MAPPINGSETTINGS_HPP
